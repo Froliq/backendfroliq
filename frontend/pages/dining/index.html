@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dining | Clone</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom, white#e4e8fa 0%, #fff 100%);
+      color: #000;
+    }
+
+    /* ---------------- HERO SECTION ---------------- */
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .hero-box {
+      background: linear-gradient(to bottom, #89b1f1,#b8d3ff);
+      border-radius: 20px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+      padding: 60px 40px;
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .hero-box h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 30px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 30px;
+      padding: 12px 20px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      font-size: 16px;
+      flex: 1;
+      margin-left: 10px;
+    }
+
+    .search-box i {
+      font-size: 18px;
+      color: #7ab0f2;
+    }
+
+    /* ---------------- SPECIALS SECTION ---------------- */
+    .specials {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .specials h2 {
+      font-size: 26px;
+      font-weight: 700;
+      margin: 50px 0 40px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .specials h2::after {
+      content: '';
+      display: block;
+      width: 80%;
+      height: 3px;
+      background: #80a9f0;
+      margin: 8px auto 0;
+      border-radius: 2px;
+    }
+
+    .specials-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .item {
+      width: 250px;
+      text-align: center;
+    }
+
+    .item img {
+      width: 100%;
+      border: 6px solid #92b1f8;
+      box-shadow: 5px 5px 0 #000;
+      margin-bottom: 12px;
+      border-radius: 4px;
+      transition: transform 0.3s;
+    }
+
+    /* Tilt effect like screenshot */
+    .tilt-left img {
+      transform: rotate(-3deg);
+    }
+    .tilt-right img {
+      transform: rotate(3deg);
+    }
+
+    .item h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .item p {
+      font-size: 14px;
+      color: #444;
+    }
+  </style>
+
+  <!-- Font Awesome for search icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- HERO / SEARCH -->
+  <section class="hero">
+    <div class="hero-box">
+      <h1>Discover restaurants, explore menus, book tables - all in one place</h1>
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search for a restaurant name">
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECIALS SECTION -->
+  <section class="specials">
+    <h2>Enjoy iconic app specials</h2>
+    <div class="specials-grid">
+      <div class="item tilt-left">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Signature packages" />
+        <h3>Signature packages</h3>
+        <p>Curated menus & selections across the best spots in town</p>
+      </div>
+      <div class="item tilt-right">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Signature packages" />
+        <h3>Peak hour booking</h3>
+        <p>Skip the queue - priority entry at top restaurants</p>
+      </div>
+      <div class="item tilt-left">
+           <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Signature packages" />
+    
+<h3>Weekend Specials</h3>
+<p>Unique offers & chef’s specials just for you</p>
+          </div>
+<div class="specials-grid">
+      <div class="item tilt-left">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Signature packages" />
+        <h3>Signature packages</h3>
+        <p>Curated menus & selections across the best spots in town</p>
+      </div>
+      <div class="item tilt-right">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Signature packages" />
+        <h3>Peak hour booking</h3>
+        <p>Skip the queue - priority entry at top restaurants</p>
+      </div>
+      <div class="item tilt-left">
+        
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Signature packages" />
+    
+<h3>Weekend Specials</h3>
+<p>Unique offers & chef’s specials just for you</p>
+      </div>
+
+    <h2>Grab great deals and unlock extra savings</h2>
+    <div class="specials-grid">
+      <div class="item tilt-left">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80" alt="Up to 50% OFF" />
+        <h3>Up to 50% OFF</h3>
+        <p>Get more for less on your dining bill</p>
+      </div>
+      <div class="item tilt-right">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80" alt="Up to 50% OFF" />
+        <h3>Buffets</h3>
+        <p>Indulge in incredible buffets - Book now, eat more, pay less!</p>
+      </div>
+    </div>
+       <div class="item tilt-left">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80" alt="Up to 50% OFF" />
+        <h3>Up to 50% OFF</h3>
+        <p>Get more for less on your dining bill</p>
+      </div>
+     
+    </div>
+  </section>
+
+</body>
+</html>
