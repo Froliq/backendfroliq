@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tickets - CineMax</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 100px;
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Booking Steps */
+        .booking-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            gap: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        }
+
+        .step.completed {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .step.active .step-number,
+        .step.completed .step-number {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Booking Container */
+        .booking-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+
+        .booking-main {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .booking-sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        /* Movie Selection */
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4ecdc4;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .movie-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .movie-option {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .movie-option:hover,
+        .movie-option.selected {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .movie-poster-small {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .movie-title-small {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Theater & Date Selection */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .selection-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .selection-label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #ccc;
+        }
+
+        .selection-input {
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Showtime Selection */
+        .showtime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+
+        .showtime-option {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .showtime-option:hover,
+        .showtime-option.selected {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: #4ecdc4;
+            transform: translateY(-2px);
+        }
+
+        .showtime-time {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .showtime-type {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        /* Seat Selection */
+        .theater-layout {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+
+        .screen {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .screen::after {
+            content: "SCREEN";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .seats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .seat-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .row-label {
+            width: 30px;
+            text-align: center;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        .seat {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px 8px 20px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .seat:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .seat.occupied {
+            background: #ff6b6b;
+            cursor: not-allowed;
+        }
+
+        .seat.selected {
+            background: #4ecdc4;
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        .seat.vip {
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+        }
+
+        .seat.vip.selected {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .seat-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-seat {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px 4px 10px 10px;
+        }
+
+        /* Booking Summary */
+        .summary-header {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #ff6b6b;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-label {
+            color: #ccc;
+        }
+
+        .summary-value {
+            font-weight: bold;
+        }
+
+        .total-amount {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            padding: 1rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .total-label {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-price {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* Payment Section */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-option {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+
+        .payment-option:hover,
+        .payment-option.selected {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .payment-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Form Fields */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4ecdc4;
+        }
+
+        .form-input {
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .form-input:focus {
+            border-color: #4ecdc4;
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1rem;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ccc;
+            border: 2px solid #666;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: #4ecdc4;
+            color: #4ecdc4;
+        }
+
+        .final-book-btn {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .final-book-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(78, 205, 196, 0.4);
+        }
+
+        .final-book-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .booking-sidebar {
+                position: static;
+                order: -1;
+            }
+
+            .booking-steps {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .selection-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .seat-row {
+                gap: 0.3rem;
+            }
+
+            .seat {
+                width: 25px;
+                height: 25px;
+            }
+
+            .seat-legend {
+                gap: 1rem;
+                font-size: 0.8rem;
+            }
+
+            .nav-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .showtime-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .payment-methods {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Hidden sections */
+        .section.hidden {
+            display: none;
+        }
+
+        /* Success Animation */
+        @keyframes success {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+        }
+
+        .success-animation {
+            animation: success 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🎬 CineMax</div>
+                <nav class="nav-buttons">
+                    <a href="index.html" class="nav-btn" onclick="loadPage('index.html')">🏠 Home</a>
+                    <a href="movie-detail.html" class="nav-btn" onclick="loadPage('movie-detail.html')">🎭 Movie Details</a>
+                    <a href="theaters.html" class="nav-btn" onclick="loadPage('theaters.html')">🏛️ Theaters</a>
+                    <a href="bookings.html" class="nav-btn" onclick="loadPage('bookings.html')">🎫 Book Tickets</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title">Book Your Tickets</h1>
+
+            <div class="booking-steps">
+                <div class="step active" id="step1">
+                    <div class="step-number">1</div>
+                    <span>Select Movie</span>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-number">2</div>
+                    <span>Choose Theater</span>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-number">3</div>
+                    <span>Pick Seats</span>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-number">4</div>
+                    <span>Payment</span>
+                </div>
+            </div>
+
+            <div class="booking-container">
+                <div class="booking-main">
+                    <!-- Step 1: Movie Selection -->
+                    <div class="section" id="movie-section">
+                        <h3 class="section-title">🎭 Select Movie</h3>
+                        <div class="movie-selection">
+                            <div class="movie-option selected" onclick="selectMovie(this, 'Spider-Man: Across the Spider-Verse')">
+                                <div class="movie-poster-small" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">🕷️</div>
+                                <div class="movie-title-small">Spider-Man: Across the Spider-Verse</div>
+                            </div>
+                            <div class="movie-option" onclick="selectMovie(this, 'Avatar: The Way of Water')">
+                                <div class="movie-poster-small" style="background: linear-gradient(135deg, #1e3c72, #2a5298);">🌊</div>
+                                <div class="movie-title-small">Avatar: The Way of Water</div>
+                            </div>
+                            <div class="movie-option" onclick="selectMovie(this, 'Dune: Part Two')">
+                                <div class="movie-poster-small" style="background: linear-gradient(135deg, #f093fb, #f5576c);">🏜️</div>
+                                <div class="movie-title-small">Dune: Part Two</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Theater & Date Selection -->
+                    <div class="section" id="theater-section">
+                        <h3 class="section-title">🏛️ Choose Theater & Date</h3>
+                        <div class="selection-grid">
+                            <div class="selection-group">
+                                <label class="selection-label">Theater</label>
+                                <select class="selection-input" id="theater-select" onchange="updateShowtimes()">
+                                    <option>CineMax IMAX Rajpura</option>
+                                    <option>PVR Cinemas Patiala</option>
+                                    <option>Inox Chandigarh</option>
+                                </select>
+                            </div>
+                            <div class="selection-group">
+                                <label class="selection-label">Date</label>
+                                <input type="date" class="selection-input" value="2025-08-27" onchange="updateShowtimes()">
+                            </div>
+                        </div>
+
+                        <h4 class="section-title" style="margin-top: 2rem;">⏰ Select Showtime</h4>
+                        <div class="showtime-grid">
+                            <div class="showtime-option selected" onclick="selectShowtime(this, '10:00 AM', 'IMAX 2D')">
+                                <div class="showtime-time">10:00 AM</div>
+                                <div class="showtime-type">IMAX 2D</div>
+                            </div>
+                            <div class="showtime-option" onclick="selectShowtime(this, '1:30 PM', 'IMAX 3D')">
+                                <div class="showtime-time">1:30 PM</div>
+                                <div class="showtime-type">IMAX 3D</div>
+                            </div>
+                            <div class="showtime-option" onclick="selectShowtime(this, '4:45 PM', 'IMAX 2D')">
+                                <div class="showtime-time">4:45 PM</div>
+                                <div class="showtime-type">IMAX 2D</div>
+                            </div>
+                            <div class="showtime-option" onclick="selectShowtime(this, '7:15 PM', 'IMAX 3D')">
+                                <div class="showtime-time">7:15 PM</div>
+                                <div class="showtime-type">IMAX 3D</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Seat Selection -->
+                    <div class="section" id="seat-section">
+                        <h3 class="section-title">💺 Select Your Seats</h3>
+                        <div class="theater-layout">
+                            <div class="screen"></div>
+                            <div class="seats-container" id="seats-container">
+                                <!-- Seats will be generated by JavaScript -->
+                            </div>
+                            <div class="seat-legend">
+                                <div class="legend-item">
+                                    <div class="legend-seat" style="background: rgba(255, 255, 255, 0.2);"></div>
+                                    <span>Available</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-seat" style="background: #4ecdc4;"></div>
+                                    <span>Selected</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-seat" style="background: #ff6b6b;"></div>
+                                    <span>Occupied</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-seat" style="background: linear-gradient(45deg, #ffd700, #ffed4a);"></div>
+                                    <span>VIP (₹50 extra)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Payment -->
+                    <div class="section hidden" id="payment-section">
+                        <h3 class="section-title">💳 Payment Details</h3>
+                        
+                        <div class="form-section">
+                            <h4 style="margin-bottom: 1rem; color: #ccc;">Payment Method</h4>
+                            <div class="payment-methods">
+                                <div class="payment-option selected" onclick="selectPayment(this, 'card')">
+                                    <div class="payment-icon">💳</div>
+                                    <div class="payment-name">Credit/Debit Card</div>
+                                </div>
+                                <div class="payment-option" onclick="selectPayment(this, 'upi')">
+                                    <div class="payment-icon">📱</div>
+                                    <div class="payment-name">UPI</div>
+                                </div>
+                                <div class="payment-option" onclick="selectPayment(this, 'wallet')">
+                                    <div class="payment-icon">👛</div>
+                                    <div class="payment-name">Digital Wallet</div>
+                                </div>
+                                <div class="payment-option" onclick="selectPayment(this, 'netbanking')">
+                                    <div class="payment-icon">🏦</div>
+                                    <div class="payment-name">Net Banking</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section" id="card-details">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label class="form-label">Card Number</label>
+                                    <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-input" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CVV</label>
+                                    <input type="password" class="form-input" placeholder="123" maxlength="4">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">Cardholder Name</label>
+                                    <input type="text" class="form-input" placeholder="John Doe">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4 style="margin-bottom: 1rem; color: #ccc;">Contact Information</h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-input" placeholder="your@email.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-input" placeholder="+91 98765 43210">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="previousStep()" id="prev-btn" style="display: none;">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="next-btn">Next →</button>
+                    </div>
+                </div>
+
+                <div class="booking-sidebar">
+                    <div class="summary-header">Booking Summary</div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Movie:</span>
+                        <span class="summary-value" id="summary-movie">Spider-Man: Across the Spider-Verse</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Theater:</span>
+                        <span class="summary-value" id="summary-theater">CineMax IMAX Rajpura</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Date & Time:</span>
+                        <span class="summary-value" id="summary-datetime">Aug 27, 10:00 AM</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Seats:</span>
+                        <span class="summary-value" id="summary-seats">Not selected</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Tickets:</span>
+                        <span class="summary-value" id="summary-tickets">0 × ₹250</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Convenience Fee:</span>
+                        <span class="summary-value" id="summary-fee">₹0</span>
+                    </div>
+                    
+                    <div class="total-amount">
+                        <div class="total-label">Total Amount</div>
+                        <div class="total-price" id="total-price">₹0</div>
+                    </div>
+                    
+                    <button class="final-book-btn" onclick="completeBooking()" disabled id="final-book">Complete Booking</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentStep = 1;
+        let selectedSeats = [];
+        let selectedMovie = 'Spider-Man: Across the Spider-Verse';
+        let selectedTheater = 'CineMax IMAX Rajpura';
+        let selectedShowtime = '10:00 AM';
+        let ticketPrice = 250;
+
+        function loadPage(pageName) {
+            alert(`Navigating to ${pageName}...`);
+        }
+
+        function selectMovie(element, movieName) {
+            document.querySelectorAll('.movie-option').forEach(option => option.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedMovie = movieName;
+            document.getElementById('summary-movie').textContent = movieName;
+        }
+
+        function selectShowtime(element, time, type) {
+            document.querySelectorAll('.showtime-option').forEach(option => option.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedShowtime = time;
+            document.getElementById('summary-datetime').textContent = `Aug 27, ${time}`;
+            
+            // Update ticket price based on type
+            ticketPrice = type.includes('3D') ? 350 : 250;
+            updateSummary();
+        }
+
+        function selectPayment(element, method) {
+            document.querySelectorAll('.payment-option').forEach(option => option.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function generateSeats() {
+            const container = document.getElementById('seats-container');
+            const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            const seatsPerRow = 12;
+            const occupiedSeats = ['A3', 'A4', 'B7', 'C2', 'C8', 'D5', 'E9', 'F1', 'F10'];
+            const vipRows = ['F', 'G', 'H'];
+
+            container.innerHTML = '';
+
+            rows.forEach(row => {
+                const rowElement = document.createElement('div');
+                rowElement.className = 'seat-row';
+
+                const rowLabel = document.createElement('div');
+                rowLabel.className = 'row-label';
+                rowLabel.textContent = row;
+                rowElement.appendChild(rowLabel);
+
+                for (let i = 1; i <= seatsPerRow; i++) {
+                    const seatId = `${row}${i}`;
+                    const seat = document.createElement('div');
+                    seat.className = 'seat';
+                    seat.dataset.seatId = seatId;
+
+                    if (vipRows.includes(row)) {
+                        seat.classList.add('vip');
+                    }
+
+                    if (occupiedSeats.includes(seatId)) {
+                        seat.classList.add('occupied');
+                    } else {
+                        seat.onclick = () => toggleSeat(seat, seatId);
+                    }
+
+                    rowElement.appendChild(seat);
+
+                    // Add aisle gap
+                    if (i === 6) {
+                        const gap = document.createElement('div');
+                        gap.style.width = '30px';
+                        rowElement.appendChild(gap);
+                    }
+                }
+
+                container.appendChild(rowElement);
+            });
+        }
+
+        function toggleSeat(element, seatId) {
+            if (element.classList.contains('occupied')) return;
+
+            const isSelected = element.classList.contains('selected');
+            
+            if (isSelected) {
+                element.classList.remove('selected');
+                selectedSeats = selectedSeats.filter(seat => seat !== seatId);
+            } else {
+                if (selectedSeats.length < 6) { // Max 6 tickets
+                    element.classList.add('selected');
+                    selectedSeats.push(seatId);
+                } else {
+                    alert('Maximum 6 tickets can be booked at once!');
+                    return;
+                }
+            }
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const seatsText = selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Not selected';
+            const ticketCount = selectedSeats.length;
+            const vipCount = selectedSeats.filter(seat => ['F', 'G', 'H'].includes(seat[0])).length;
+            const regularCount = ticketCount - vipCount;
+            
+            const regularPrice = regularCount * ticketPrice;
+            const vipPrice = vipCount * (ticketPrice + 50);
+            const subtotal = regularPrice + vipPrice;
+            const convenienceFee = ticketCount > 0 ? Math.ceil(subtotal * 0.02) : 0; // 2% convenience fee
+            const total = subtotal + convenienceFee;
+
+            document.getElementById('summary-seats').textContent = seatsText;
+            document.getElementById('summary-tickets').textContent = 
+                ticketCount > 0 ? `${ticketCount} × ₹${ticketPrice}${vipCount > 0 ? ' (+₹50 VIP)' : ''}` : '0 × ₹' + ticketPrice;
+            document.getElementById('summary-fee').textContent = '₹' + convenienceFee;
+            document.getElementById('total-price').textContent = '₹' + total;
+
+            // Enable/disable final booking button
+            const finalBookBtn = document.getElementById('final-book');
+            finalBookBtn.disabled = ticketCount === 0;
+        }
+
+        function nextStep() {
+            if (currentStep === 1) {
+                currentStep = 2;
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step1').classList.add('completed');
+                document.getElementById('step2').classList.add('active');
+                document.getElementById('prev-btn').style.display = 'block';
+            } else if (currentStep === 2) {
+                currentStep = 3;
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step2').classList.add('completed');
+                document.getElementById('step3').classList.add('active');
+                generateSeats();
+            } else if (currentStep === 3) {
+                if (selectedSeats.length === 0) {
+                    alert('Please select at least one seat!');
+                    return;
+                }
+                currentStep = 4;
+                document.getElementById('step3').classList.remove('active');
+                document.getElementById('step3').classList.add('completed');
+                document.getElementById('step4').classList.add('active');
+                document.getElementById('seat-section').classList.add('hidden');
+                document.getElementById('payment-section').classList.remove('hidden');
+                document.getElementById('next-btn').textContent = 'Pay Now';
+            } else if (currentStep === 4) {
+                completeBooking();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep === 2) {
+                currentStep = 1;
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step1').classList.remove('completed');
+                document.getElementById('step1').classList.add('active');
+                document.getElementById('prev-btn').style.display = 'none';
+            } else if (currentStep === 3) {
+                currentStep = 2;
+                document.getElementById('step3').classList.remove('active');
+                document.getElementById('step2').classList.remove('completed');
+                document.getElementById('step2').classList.add('active');
+            } else if (currentStep === 4) {
+                currentStep = 3;
+                document.getElementById('step4').classList.remove('active');
+                document.getElementById('step3').classList.remove('completed');
+                document.getElementById('step3').classList.add('active');
+                document.getElementById('payment-section').classList.add('hidden');
+                document.getElementById('seat-section').classList.remove('hidden');
+                document.getElementById('next-btn').textContent = 'Next →';
+            }
+        }
+
+        function completeBooking() {
+            if (selectedSeats.length === 0) {
+                alert('Please select seats first!');
+                return;
+            }
+
+            // Simulate payment processing
+            const finalBtn = document.getElementById('final-book');
+            finalBtn.textContent = 'Processing...';
+            finalBtn.disabled = true;
+
+            setTimeout(() => {
+                alert('🎉 Booking Confirmed!\n\nYour tickets have been sent to your email.\nBooking ID: CMX' + Math.random().toString(36).substr(2, 9).toUpperCase());
+                
+                // Reset form
+                selectedSeats = [];
+                currentStep = 1;
+                updateSummary();
+                
+                // Reset UI
+                document.querySelectorAll('.step').forEach(step => {
+                    step.classList.remove('active', 'completed');
+                });
+                document.getElementById('step1').classList.add('active');
+                document.getElementById('payment-section').classList.add('hidden');
+                document.getElementById('seat-section').classList.remove('hidden');
+                document.getElementById('prev-btn').style.display = 'none';
+                document.getElementById('next-btn').textContent = 'Next →';
+                
+                finalBtn.textContent = 'Complete Booking';
+                finalBtn.disabled = true;
+            }, 2000);
+        }
+
+        function updateShowtimes() {
+            // Simulate updating showtimes based on theater/date selection
+            alert('Showtimes updated based on your selection!');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSummary();
+            
+            // Add animation to elements
+            const elements = document.querySelectorAll('.booking-main, .booking-sidebar, .booking-steps');
+            elements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

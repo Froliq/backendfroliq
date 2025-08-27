@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tickets - DISTRKT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a.active,
+        .nav-links a:hover {
+            color: #4ecdc4;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4ecdc4;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 2rem 2rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 3rem;
+        }
+
+        /* Event Info Header */
+        .event-header {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .event-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .event-image {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .event-venue {
+            color: #4ecdc4;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-date {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        /* Ticket Selection */
+        .ticket-selection {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #4ecdc4;
+        }
+
+        .ticket-type {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ticket-type:hover {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.05);
+        }
+
+        .ticket-type.selected {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .ticket-price {
+            font-weight: 700;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+        }
+
+        .ticket-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .ticket-benefits {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-tag {
+            background: rgba(69, 183, 209, 0.2);
+            color: #45b7d1;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+            color: #4ecdc4;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: #4ecdc4;
+            color: #0a0a0a;
+        }
+
+        .quantity-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item.total {
+            border-top: 2px solid #4ecdc4;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #4ecdc4;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .item-name {
+            font-weight: 600;
+        }
+
+        .item-quantity {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #ff6b6b;
+        }
+
+        /* Booking Form */
+        .booking-form {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4ecdc4;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.05);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-method {
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .payment-method:hover,
+        .payment-method.selected {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Security Badge */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .event-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .event-title {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ticket-type {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .ticket-type:nth-child(1) { animation-delay: 0.1s; }
+        .ticket-type:nth-child(2) { animation-delay: 0.2s; }
+        .ticket-type:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">DISTRKT</div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../pages/movies/index.html">Movies</a></li>
+                <li><a href="index.html" class="active">Events</a></li>
+                <li><a href="../pages/dining/index.html">Dining</a></li>
+                <li><a href="../pages/user/profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Back Button -->
+    <a href="event-detail.html" class="back-btn">← Back to Event Details</a>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Event Header -->
+        <div class="event-header">
+            <div class="event-info">
+                <div class="event-image">🎵</div>
+                <div class="event-details">
+                    <h1 class="event-title">Summer Music Festival</h1>
+                    <p class="event-venue">Madison Square Garden</p>
+                    <p class="event-date">Saturday, December 15, 2024 • 7:00 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket Selection -->
+        <div class="ticket-selection">
+            <h2 class="section-title">Select Your Tickets</h2>
+            
+            <div class="ticket-type" data-price="45" data-name="General Admission">
+                <div class="ticket-header">
+                    <div class="ticket-name">General Admission</div>
+                    <div class="ticket-price">$45</div>
+                </div>
+                <div class="ticket-description">
+                    Access to the main floor and general seating areas. Food and beverages sold separately.
+                </div>
+                <div class="ticket-benefits">
+                    <span class="benefit-tag">Main Floor Access</span>
+                    <span class="benefit-tag">General Seating</span>
+                </div>
+                <div class="quantity-selector">
+                    <span class="quantity-label">Quantity:</span>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(this, -1)">-</button>
+                        <span class="quantity-display">0</span>
+                        <button class="quantity-btn" onclick="updateQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticket-type" data-price="85" data-name="Premium Seating">
+                <div class="ticket-header">
+                    <div class="ticket-name">Premium Seating</div>
+                    <div class="ticket-price">$85</div>
+                </div>
+                <div class="ticket-description">
+                    Reserved seating in premium sections with better views and complimentary drinks.
+                </div>
+                <div class="ticket-benefits">
+                    <span class="benefit-tag">Reserved Seating</span>
+                    <span class="benefit-tag">Premium View</span>
+                    <span class="benefit-tag">Free Drink</span>
+                </div>
+                <div class="quantity-selector">
+                    <span class="quantity-label">Quantity:</span>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(this, -1)">-</button>
+                        <span class="quantity-display">0</span>
+                        <button class="quantity-btn" onclick="updateQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticket-type" data-price="120" data-name="VIP Experience">
+                <div class="ticket-header">
+                    <div class="ticket-name">VIP Experience</div>
+                    <div class="ticket-price">$120</div>
+                </div>
+                <div class="ticket-description">
+                    Premium front-row seating, backstage meet & greet, exclusive merchandise, and VIP lounge access.
+                </div>
+                <div class="ticket-benefits">
+                    <span class="benefit-tag">Front Row</span>
+                    <span class="benefit-tag">Meet & Greet</span>
+                    <span class="benefit-tag">VIP Lounge</span>
+                    <span class="benefit-tag">Merchandise</span>
+                </div>
+                <div class="quantity-selector">
+                    <span class="quantity-label">Quantity:</span>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(this, -1)">-</button>
+                        <span class="quantity-display">0</span>
+                        <button class="quantity-btn" onclick="updateQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Form -->
+            <div class="booking-form">
+                <h3 class="section-title">Booking Information</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="john.doe@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" placeholder="+1 (555) 123-4567" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <div class="payment-methods">
+                        <div class="payment-method selected" data-method="card">
+                            💳 Card
+                        </div>
+                        <div class="payment-method" data-method="paypal">
+                            🅿 PayPal
+                        </div>
+                        <div class="payment-method" data-method="apple">
+                            🍎 Apple Pay
+                        </div>
+                        <div class="payment-method" data-method="google">
+                            🟢 Google Pay
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-details">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CVV</label>
+                            <input type="text" class="form-input" placeholder="123" maxlength="4">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Expiry Month</label>
+                            <input type="text" class="form-input" placeholder="MM" maxlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expiry Year</label>
+                            <input type="text" class="form-input" placeholder="YY" maxlength="2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h3 class="section-title">Order Summary</h3>
+            <div id="summary-items">
+                <div class="summary-item">
+                    <div class="item-details">
+                        <div class="item-name">No tickets selected</div>
+                    </div>
+                </div>
+            </div>
+            <div class="summary-item total">
+                <div>Total</div>
+                <div id="total-price">$0.00</div>
+            </div>
+            
+            <button class="btn-primary" id="book-tickets" disabled>
+                Complete Booking
+            </button>
+
+            <div class="security-badge">
+                🔒 Secure SSL Encryption
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTickets = {};
+        let total = 0;
+
+        function updateQuantity(button, change) {
+            const ticketType = button.closest('.ticket-type');
+            const quantityDisplay = ticketType.querySelector('.quantity-display');
+            const price = parseInt(ticketType.dataset.price);
+            const name = ticketType.dataset.name;
+            
+            let currentQuantity = parseInt(quantityDisplay.textContent);
+            let newQuantity = Math.max(0, currentQuantity + change);
+            
+            quantityDisplay.textContent = newQuantity;
+            
+            if (newQuantity > 0) {
+                ticketType.classList.add('selected');
+                selectedTickets[name] = { quantity: newQuantity, price: price };
+            } else {
+                ticketType.classList.remove('selected');
+                delete selectedTickets[name];
+            }
+            
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summaryItems = document.getElementById('summary-items');
+            const totalPrice = document.getElementById('total-price');
+            const bookButton = document.getElementById('book-tickets');
+            
+            summaryItems.innerHTML = '';
+            total = 0;
+            
+            if (Object.keys(selectedTickets).length === 0) {
+                summaryItems.innerHTML = `
+                    <div class="summary-item">
+                        <div class="item-details">
+                            <div class="item-name">No tickets selected</div>
+                        </div>
+                    </div>
+                `;
+                bookButton.disabled = true;
+            } else {
+                Object.entries(selectedTickets).forEach(([name, ticket]) => {
+                    const subtotal = ticket.quantity * ticket.price;
+                    total += subtotal;
+                    
+                    summaryItems.innerHTML += `
+                        <div class="summary-item">
+                            <div class="item-details">
+                                <div class="item-name">${name}</div>
+                                <div class="item-quantity">${ticket.quantity} × $${ticket.price}</div>
+                            </div>
+                            <div class="item-price">$${subtotal}</div>
+                        </div>
+                    `;
+                });
+                bookButton.disabled = false;
+            }
+            
+            // Add fees
+            if (total > 0) {
+                const serviceFee = Math.round(total * 0.1);
+                const processingFee = 2.50;
+                total += serviceFee + processingFee;
+                
+                summaryItems.innerHTML += `
+                    <div class="summary-item">
+                        <div class="item-details">
+                            <div class="item-name">Service Fee</div>
+                        </div>
+                        <div class="item-price">$${serviceFee}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="item-details">
+                            <div class="item-name">Processing Fee</div>
+                        </div>
+                        <div class="item-price">$${processingFee.toFixed(2)}</div>
+                    </div>
+                `;
+            }
+            
+            totalPrice.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Payment method selection
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', () => {
+                document.querySelector('.payment-method.selected').classList.remove('selected');
+                method.classList.add('selected');
+                
+                const paymentDetails = document.querySelector('.payment-details');
+                const selectedMethod = method.dataset.method;
+                
+                if (selectedMethod === 'card') {
+                    paymentDetails.style.display = 'block';
+                } else {
+                    paymentDetails.style.display = 'none';
+                }
+            });
+        });
+
+        // Book tickets
+        document.getElementById('book-tickets').addEventListener('click', () => {
+            // Validate form
+            const requiredFields = document.querySelectorAll('.form-input[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#ff6b6b';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }
+            });
+            
+            if (!isValid) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Simulate booking process
+            const button = document.getElementById('book-tickets');
+            const originalText = button.textContent;
+            
+            button.textContent = 'Processing...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                alert(`Booking confirmed! Total: $${total.toFixed(2)}\nConfirmation details will be sent to your email.`);
+                window.location.href = 'index.html';
+            }, 2000);
+        });
+
+        // Format card number input
+        document.querySelector('input[placeholder="1234 5678 9012 3456"]').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+    </script>
+</body>
+</html>

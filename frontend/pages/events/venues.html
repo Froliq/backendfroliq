@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venues - DISTRKT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a.active,
+        .nav-links a:hover {
+            color: #4ecdc4;
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #4ecdc4;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400"><rect fill="%2345b7d1" width="1000" height="400"/><polygon fill="%234ecdc4" opacity="0.4" points="0,400 300,0 600,200 1000,100 1000,400"/><circle fill="%23ff6b6b" opacity="0.3" cx="800" cy="150" r="80"/></svg>');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #45b7d1, #4ecdc4);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Search and Filters */
+        .search-section {
+            max-width: 1400px;
+            margin: -2rem auto 0;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #45b7d1, #4ecdc4);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(69, 183, 209, 0.3);
+            border-color: #45b7d1;
+        }
+
+        /* Venues Grid */
+        .venues-section {
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .venues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .venue-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .venue-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: #45b7d1;
+        }
+
+        .venue-image {
+            height: 250px;
+            background: linear-gradient(45deg, #45b7d1, #4ecdc4, #ff6b6b);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .venue-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(69, 183, 209, 0.4), rgba(78, 205, 196, 0.4));
+        }
+
+        .venue-image::after {
+            content: '🏢';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0.8;
+        }
+
+        .venue-rating {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .venue-capacity {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .venue-info {
+            padding: 1.5rem;
+        }
+
+        .venue-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .venue-address {
+            color: #45b7d1;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .venue-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .venue-features {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .venue-feature {
+            background: rgba(69, 183, 209, 0.2);
+            color: #45b7d1;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .venue-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .venue-stat {
+            text-align: center;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .venue-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #4ecdc4;
+            display: block;
+        }
+
+        .venue-stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .venue-events {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+
+        .venue-events-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #4ecdc4;
+        }
+
+        .upcoming-events {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .event-pill {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        /* Featured Venues */
+        .featured-section {
+            margin: 4rem 0;
+        }
+
+        .featured-venues {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .featured-card {
+            background: linear-gradient(135deg, rgba(69, 183, 209, 0.1), rgba(78, 205, 196, 0.1));
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(69, 183, 209, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            border-color: #45b7d1;
+        }
+
+        /* Load More */
+        .load-more {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .load-more-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #45b7d1, #4ecdc4);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 3rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #4ecdc4;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .venues-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .venue-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .venue-card:nth-child(1) { animation-delay: 0.1s; }
+        .venue-card:nth-child(2) { animation-delay: 0.2s; }
+        .venue-card:nth-child(3) { animation-delay: 0.3s; }
+        .venue-card:nth-child(4) { animation-delay: 0.4s; }
+        .venue-card:nth-child(5) { animation-delay: 0.5s; }
+        .venue-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">DISTRKT</div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../pages/movies/index.html">Movies</a></li>
+                <li><a href="index.html">Events</a></li>
+                <li><a href="../pages/dining/index.html">Dining</a></li>
+                <li><a href="../pages/user/profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Find Perfect Venues</h1>
+            <p>Discover amazing spaces for unforgettable events</p>
+        </div>
+    </section>
+
+    <!-- Search and Filters -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search venues by name, location, or type...">
+                <button class="search-btn">Search</button>
+            </div>
+            <div class="filters">
+                <button class="filter-btn active">All Venues</button>
+                <button class="filter-btn">Concert Halls</button>
+                <button class="filter-btn">Theaters</button>
+                <button class="filter-btn">Clubs</button>
+                <button class="filter-btn">Outdoor</button>
+                <button class="filter-btn">Intimate</button>
+                <button class="filter-btn">Large Capacity</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Venues Section -->
+    <section class="venues-section">
+        <h2 class="section-title">Featured Venues</h2>
+        <div class="venues-grid">
+            <div class="venue-card">
+                <div class="venue-image">
+                    <div class="venue-rating">⭐ 4.8</div>
+                    <div class="venue-capacity">5,000 capacity</div>
+                </div>
+                <div class="venue-info">
+                    <h3 class="venue-title">Madison Square Garden</h3>
+                    <p class="venue-address">📍 New York, NY</p>
+                    <p class="venue-description">Iconic venue hosting world-class concerts, sports events, and entertainment shows in the heart of Manhattan.</p>
+                    <div class="venue-features">
+                        <span class="venue-feature">Concert Hall</span>
+                        <span class="venue-feature">Sports Arena</span>
+                        <span class="venue-feature">Premium Sound</span>
+                    </div>
+                    <div class="venue-stats">
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">5,000</span>
+                            <span class="venue-stat-label">Capacity</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">4.8</span>
+                            <span class="venue-stat-label">Rating</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">150+</span>
+                            <span class="venue-stat-label">Events</span>
+                        </div>
+                    </div>
+                    <div class="venue-events">
+                        <h4 class="venue-events-title">Upcoming Events</h4>
+                        <div class="upcoming-events">
+                            <span class="event-pill">Rock Concert</span>
+                            <span class="event-pill">Basketball Game</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="venue-card">
+                <div class="venue-image">
+                    <div class="venue-rating">⭐ 4.6</div>
+                    <div class="venue-capacity">500 capacity</div>
+                </div>
+                <div class="venue-info">
+                    <h3 class="venue-title">Blue Note Jazz Club</h3>
+                    <p class="venue-address">📍 Greenwich Village, NY</p>
+                    <p class="venue-description">Legendary intimate jazz club featuring world-renowned musicians in a cozy, sophisticated atmosphere.</p>
+                    <div class="venue-features">
+                        <span class="venue-feature">Jazz Club</span>
+                        <span class="venue-feature">Intimate</span>
+                        <span class="venue-feature">Fine Dining</span>
+                    </div>
+                    <div class="venue-stats">
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">500</span>
+                            <span class="venue-stat-label">Capacity</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">4.6</span>
+                            <span class="venue-stat-label">Rating</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">200+</span>
+                            <span class="venue-stat-label">Events</span>
+                        </div>
+                    </div>
+                    <div class="venue-events">
+                        <h4 class="venue-events-title">Upcoming Events</h4>
+                        <div class="upcoming-events">
+                            <span class="event-pill">Jazz Night</span>
+                            <span class="event-pill">Blues Evening</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="venue-card">
+                <div class="venue-image">
+                    <div class="venue-rating">⭐ 4.9</div>
+                    <div class="venue-capacity">2,800 capacity</div>
+                </div>
+                <div class="venue-info">
+                    <h3 class="venue-title">Broadway Theatre</h3>
+                    <p class="venue-address">📍 Times Square, NY</p>
+                    <p class="venue-description">Historic Broadway theater showcasing world-class musicals and theatrical productions.</p>
+                    <div class="venue-features">
+                        <span class="venue-feature">Theatre</span>
+                        <span class="venue-feature">Broadway</span>
+                        <span class="venue-feature">Historic</span>
+                    </div>
+                    <div class="venue-stats">
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">2,800</span>
+                            <span class="venue-stat-label">Capacity</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">4.9</span>
+                            <span class="venue-stat-label">Rating</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">300+</span>
+                            <span class="venue-stat-label">Shows</span>
+                        </div>
+                    </div>
+                    <div class="venue-events">
+                        <h4 class="venue-events-title">Current Shows</h4>
+                        <div class="upcoming-events">
+                            <span class="event-pill">The Lion King</span>
+                            <span class="event-pill">Hamilton</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="venue-card">
+                <div class="venue-image">
+                    <div class="venue-rating">⭐ 4.4</div>
+                    <div class="venue-capacity">1,200 capacity</div>
+                </div>
+                <div class="venue-info">
+                    <h3 class="venue-title">Warehouse 23</h3>
+                    <p class="venue-address">📍 Brooklyn, NY</p>
+                    <p class="venue-description">Industrial-style venue perfect for electronic music events, raves, and contemporary performances.</p>
+                    <div class="venue-features">
+                        <span class="venue-feature">Electronic</span>
+                        <span class="venue-feature">Industrial</span>
+                        <span class="venue-feature">Dance Floor</span>
+                    </div>
+                    <div class="venue-stats">
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">1,200</span>
+                            <span class="venue-stat-label">Capacity</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">4.4</span>
+                            <span class="venue-stat-label">Rating</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">80+</span>
+                            <span class="venue-stat-label">Events</span>
+                        </div>
+                    </div>
+                    <div class="venue-events">
+                        <h4 class="venue-events-title">Upcoming Events</h4>
+                        <div class="upcoming-events">
+                            <span class="event-pill">EDM Night</span>
+                            <span class="event-pill">Techno Party</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="venue-card">
+                <div class="venue-image">
+                    <div class="venue-rating">⭐ 4.7</div>
+                    <div class="venue-capacity">300 capacity</div>
+                </div>
+                <div class="venue-info">
+                    <h3 class="venue-title">The Comedy Club</h3>
+                    <p class="venue-address">📍 West Village, NY</p>
+                    <p class="venue-description">Cozy comedy venue featuring both emerging and established comedians in an intimate setting.</p>
+                    <div class="venue-features">
+                        <span class="venue-feature">Comedy</span>
+                        <span class="venue-feature">Intimate</span>
+                        <span class="venue-feature">Full Bar</span>
+                    </div>
+                    <div class="venue-stats">
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">300</span>
+                            <span class="venue-stat-label">Capacity</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">4.7</span>
+                            <span class="venue-stat-label">Rating</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">250+</span>
+                            <span class="venue-stat-label">Shows</span>
+                        </div>
+                    </div>
+                    <div class="venue-events">
+                        <h4 class="venue-events-title">This Week</h4>
+                        <div class="upcoming-events">
+                            <span class="event-pill">Stand-up</span>
+                            <span class="event-pill">Open Mic</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="venue-card">
+                <div class="venue-image">
+                    <div class="venue-rating">⭐ 4.5</div>
+                    <div class="venue-capacity">10,000 capacity</div>
+                </div>
+                <div class="venue-info">
+                    <h3 class="venue-title">Central Park SummerStage</h3>
+                    <p class="venue-address">📍 Central Park, NY</p>
+                    <p class="venue-description">Outdoor amphitheater in Central Park hosting free and ticketed concerts during summer months.</p>
+                    <div class="venue-features">
+                        <span class="venue-feature">Outdoor</span>
+                        <span class="venue-feature">Park Setting</span>
+                        <span class="venue-feature">Free Events</span>
+                    </div>
+                    <div class="venue-stats">
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">10,000</span>
+                            <span class="venue-stat-label">Capacity</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">4.5</span>
+                            <span class="venue-stat-label">Rating</span>
+                        </div>
+                        <div class="venue-stat">
+                            <span class="venue-stat-value">50+</span>
+                            <span class="venue-stat-label">Events</span>
+                        </div>
+                    </div>
+                    <div class="venue-events">
+                        <h4 class="venue-events-title">Summer Season</h4>
+                        <div class="upcoming-events">
+                            <span class="event-pill">World Music</span>
+                            <span class="event-pill">Dance Fest</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="load-more">
+            <button class="load-more-btn">Load More Venues</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../info/about.html">About</a>
+                <a href="../info/contact.html">Contact</a>
+                <a href="../info/terms.html">Terms</a>
+                <a href="../info/privacy.html">Privacy</a>
+            </div>
+            <p>&copy; 2024 DISTRKT. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.filter-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                // Filter logic would go here
+            });
+        });
+
+        // Search functionality
+        document.querySelector('.search-btn').addEventListener('click', () => {
+            const query = document.querySelector('.search-input').value;
+            console.log('Searching for venues:', query);
+            // Search logic would go here
+        });
+
+        // Venue card clicks
+        document.querySelectorAll('.venue-card').forEach(card => {
+            card.addEventListener('click', () => {
+                window.location.href = 'venue-detail.html';
+            });
+        });
+
+        // Load more functionality
+        document.querySelector('.load-more-btn').addEventListener('click', () => {
+            console.log('Loading more venues...');
+            // Load more venues logic would go here
+        });
+    </script>
+</body>
+</html>

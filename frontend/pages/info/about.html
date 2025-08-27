@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>District - Information Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .page {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            position: relative;
+            text-align: center;
+        }
+
+        .page-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .content-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 2px;
+        }
+
+        .content-text {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* About Page Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .team-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .team-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .team-role {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .team-bio {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Contact Page Styles */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-info {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 20px;
+        }
+
+        /* Help/FAQ Styles */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .faq-category {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 20px;
+            text-align: left;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #333;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question:hover {
+            background: #f8f9ff;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .faq-answer.active {
+            max-height: 200px;
+            padding: 20px;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Terms and Privacy Styles */
+        .legal-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .legal-section {
+            margin-bottom: 40px;
+        }
+
+        .legal-section h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .legal-section p {
+            margin-bottom: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .legal-section ul {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        .legal-section li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .highlight-box {
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                justify-content: center;
+            }
+            
+            .page {
+                padding: 20px;
+            }
+            
+            .legal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showPage('about')">About Us</button>
+                <button class="nav-tab" onclick="showPage('contact')">Contact</button>
+                <button class="nav-tab" onclick="showPage('help')">Help/FAQ</button>
+                <button class="nav-tab" onclick="showPage('terms')">Terms</button>
+                <button class="nav-tab" onclick="showPage('privacy')">Privacy</button>
+            </div>
+        </div>
+
+        <!-- About Us Page -->
+        <div id="about" class="page active">
+            <h1 class="page-title">About District</h1>
+            <p class="page-subtitle">Bringing the best food experiences to your doorstep</p>
+            
+            <div class="content-section">
+                <h2 class="section-title">Our Story</h2>
+                <p class="content-text">
+                    District was founded with a simple mission: to connect food lovers with the best restaurants and culinary experiences in their city. We believe that great food brings people together and creates memorable moments.
+                </p>
+                <p class="content-text">
+                    From humble beginnings as a local food discovery platform, we've grown into a comprehensive food delivery and dining platform serving millions of customers across multiple cities. We partner with thousands of restaurants, from street food vendors to fine dining establishments.
+                </p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">5M+</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">25K+</div>
+                    <div class="stat-label">Restaurant Partners</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Cities</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">30min</div>
+                    <div class="stat-label">Avg Delivery Time</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2 class="section-title">Our Mission</h2>
+                <p class="content-text">
+                    To make delicious food accessible to everyone, everywhere. We're committed to supporting local restaurants, providing excellent customer service, and delivering fresh, quality food that brings joy to your table.
+                </p>
+            </div>
+
+            <div class="content-section">
+                <h2 class="section-title">Why Choose District?</h2>
+                <div class="content-text">
+                    <strong>🍔 Diverse Cuisine Options</strong> - From local street food to international cuisines<br><br>
+                    <strong>🚀 Fast Delivery</strong> - Average delivery time of 30 minutes<br><br>
+                    <strong>💰 Great Deals</strong> - Exclusive offers and discounts daily<br><br>
+                    <strong>📱 Easy Ordering</strong> - Simple, user-friendly app and website<br><br>
+                    <strong>⭐ Quality Assurance</strong> - Verified restaurants and food safety standards<br><br>
+                    <strong>🎯 Personalized Experience</strong> - Recommendations based on your preferences
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div id="contact" class="page">
+            <h1 class="page-title">Contact Us</h1>
+            <p class="page-subtitle">We're here to help! Reach out to our support team</p>
+            
+            <div class="contact-grid">
+                <div class="contact-form">
+                    <h3 style="margin-bottom: 20px; color: #333;">Send us a Message</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Issue Type</label>
+                            <select required>
+                                <option value="">Select issue type</option>
+                                <option value="order">Order Issues</option>
+                                <option value="delivery">Delivery Problems</option>
+                                <option value="payment">Payment Issues</option>
+                                <option value="restaurant">Restaurant Concerns</option>
+                                <option value="app">App/Website Issues</option>
+                                <option value="refund">Refund Request</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Order ID (if applicable)</label>
+                            <input type="text" placeholder="e.g., #ORD123456">
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea rows="5" placeholder="Describe your issue in detail..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Send Message</button>
+                    </form>
+                </div>
+                
+                <div class="contact-info">
+                    <h3 style="margin-bottom: 30px;">Get in Touch</h3>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <strong>Head Office</strong><br>
+                            District Tower, Tech City<br>
+                            Bangalore, KA 560001
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div>
+                            <strong>Customer Support</strong><br>
+                            1800-123-4567<br>
+                            Available 24/7
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div>
+                            <strong>Email Support</strong><br>
+                            support@district.com<br>
+                            Response within 2 hours
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">💬</div>
+                        <div>
+                            <strong>Live Chat</strong><br>
+                            Available in app<br>
+                            Instant responses
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">🏪</div>
+                        <div>
+                            <strong>Partner with Us</strong><br>
+                            partner@district.com<br>
+                            Restaurant partnerships
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help/FAQ Page -->
+        <div id="help" class="page">
+            <h1 class="page-title">Help Center</h1>
+            <p class="page-subtitle">Find answers to commonly asked questions</p>
+            
+            <div class="faq-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="🔍 Search for help topics..." onkeyup="searchFAQ(this.value)">
+                </div>
+
+                <div class="faq-category">
+                    <div class="category-header">📦 Orders & Delivery</div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How do I place an order?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            Open the District app, enter your location, browse restaurants, select items, add to cart, and proceed to checkout. You can pay online or choose cash on delivery.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How can I track my order?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            You can track your order in real-time through the 'My Orders' section in the app. You'll receive notifications for order confirmation, preparation, and delivery updates.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            What if my order is delayed?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            If your order is significantly delayed, you'll receive automatic updates. You can also contact our support team for immediate assistance and possible compensation.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-category">
+                    <div class="category-header">💳 Payments & Refunds</div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            What payment methods do you accept?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            We accept all major credit/debit cards, UPI, digital wallets (Paytm, PhonePe, Google Pay), and cash on delivery in select areas.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How do I get a refund?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            Refunds are processed automatically for cancelled orders. For other issues, contact support with your order details. Refunds typically take 3-5 business days to reflect.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-category">
+                    <div class="category-header">🏪 Restaurants & Food</div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How do you ensure food quality?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            All partner restaurants undergo quality checks and hygiene audits. We have strict food safety standards and customer ratings help maintain quality across our platform.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            Can I customize my order?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            Yes! Most restaurants allow customizations. You can add special instructions, choose spice levels, remove ingredients, or add extra items as per restaurant availability.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-category">
+                    <div class="category-header">👤 Account & Profile</div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How do I update my delivery address?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            Go to 'Profile' > 'Manage Addresses' to add, edit, or delete delivery addresses. You can also add new addresses during checkout.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How do I delete my account?
+                            <span class="faq-icon">▼</span>
+                        </button>
+                        <div class="faq-answer">
+                            Contact our support team to request account deletion. Please note that this action is irreversible and you'll lose all order history and saved preferences.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terms & Conditions Page -->
+        <div id="terms" class="page">
+            <h1 class="page-title">Terms & Conditions</h1>
+            <p class="page-subtitle">Please read these terms carefully before using our services</p>
+            
+            <div class="legal-content">
+                <div class="legal-section">
+                    <h3>1. Acceptance of Terms</h3>
+                    <p>By accessing and using District's services, you accept and agree to be bound by the terms and provisions of this agreement. These Terms of Service govern your use of our platform, mobile application, and related services.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>2. Service Description</h3>
+                    <p>District provides a platform that connects users with restaurants for food ordering and delivery services. We act as an intermediary between customers and restaurant partners.</p>
+                    <ul>
+                        <li>Food ordering and delivery services</li>
+                        <li>Restaurant discovery and reviews</li>
+                        <li>Payment processing</li>
+                        <li>Customer support services</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section">
+                    <h3>3. User Responsibilities</h3>
+                    <p>When using our services, you agree to:</p>
+                    <ul>
+                        <li>Provide accurate and current information</li>
+                        <li>Use the service only for personal, non-commercial purposes</li>
+                        <li>Not engage in fraudulent activities</li>
+                        <li>Respect our delivery personnel and restaurant partners</li>
+                        <li>Pay for all orders placed through your account</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Important:</strong> Violations of these terms may result in suspension or termination of your account.
+                </div>
+
+                <div class="legal-section">
+                    <h3>4. Order and Delivery Terms</h3>
+                    <p>Orders placed through District are subject to acceptance by the restaurant. Delivery times are estimates and may vary due to factors beyond our control including weather, traffic, and restaurant preparation time.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>5. Cancellation and Refund Policy</h3>
+                    <p>Orders can be cancelled within a limited time after placement. Refunds are processed according to our refund policy and may take 3-5 business days to reflect in your account.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>6. Limitation of Liability</h3>
+                    <p>District's liability is limited to the amount paid for the specific order. We are not responsible for food quality issues beyond facilitating resolution between customer and restaurant.</p>
+                </div>
+
+                <div class="last-updated">
+                    Last updated: August 27, 2024
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy Page -->
+        <div id="privacy" class="page">
+            <h1 class="page-title">Privacy Policy</h1>
+            <p class="page-subtitle">Your privacy is important to us. Learn how we collect, use, and protect your data.</p>
+            
+            <div class="legal-content">
+                <div class="legal-section">
+                    <h3>1. Information We Collect</h3>
+                    <p>We collect information you provide directly to us, such as when you:</p>
+                    <ul>
+                        <li>Create an account or update your profile</li>
+                        <li>Place orders or make payments</li>
+                        <li>Contact customer support</li>
+                        <li>Leave reviews or ratings</li>
+                        <li>Participate in promotions or surveys</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section">
+                    <h3>2. How We Use Your Information</h3>
+                    <p>We use the information we collect to:</p>
+                    <ul>
+                        <li>Process and fulfill your orders</li>
+                        <li>Provide customer support and respond to inquiries</li>
+                        <li>Send order updates and delivery notifications</li>
+                        <li>Improve our services and user experience</li>
+                        <li>Personalize content and recommendations</li>
+                        <li>Prevent fraud and ensure platform security</li>
+                        <li>Comply with legal obligations</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section">
+                    <h3>3. Information Sharing</h3>
+                    <p>We may share your information with:</p>
+                    <ul>
+                        <li><strong>Restaurant Partners:</strong> Order details and delivery information</li>
+                        <li><strong>Delivery Partners:</strong> Contact and address information for delivery</li>
+                        <li><strong>Payment Processors:</strong> Payment information for transaction processing</li>
+                        <li><strong>Service Providers:</strong> Third parties who assist in our operations</li>
+                        <li><strong>Legal Authorities:</strong> When required by law or to protect our rights</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Your Data Security:</strong> We use industry-standard encryption and security measures to protect your personal information.
+                </div>
+
+                <div class="legal-section">
+                    <h3>4. Location Information</h3>
+                    <p>We collect and use location data to:</p>
+                    <ul>
+                        <li>Show nearby restaurants and accurate delivery times</li>
+                        <li>Enable delivery tracking and navigation</li>
+                        <li>Provide location-based offers and recommendations</li>
+                        <li>Improve our service coverage and efficiency</li>
+                    </ul>
+                    <p>You can control location permissions through your device settings.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>5. Cookies and Tracking</h3>
+                    <p>We use cookies and similar technologies to:</p>
+                    <ul>
+                        <li>Remember your preferences and settings</li>
+                        <li>Analyze how you use our platform</li>
+                        <li>Provide personalized content and ads</li>
+                        <li>Improve our services and user experience</li>
+                    </ul>
+                    <p>You can manage cookie preferences through your browser settings.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>6. Your Rights and Choices</h3>
+                    <p>You have the right to:</p>
+                    <ul>
+                        <li>Access and update your personal information</li>
+                        <li>Delete your account and associated data</li>
+                        <li>Opt out of marketing communications</li>
+                        <li>Request data portability</li>
+                        <li>File complaints with data protection authorities</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section">
+                    <h3>7. Data Retention</h3>
+                    <p>We retain your information for as long as necessary to provide our services, comply with legal obligations, and resolve disputes. Order history and transaction data may be retained longer for business and legal purposes.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>8. Children's Privacy</h3>
+                    <p>Our services are not intended for children under 13. We do not knowingly collect personal information from children under 13. If we become aware of such collection, we will delete the information immediately.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>9. International Transfers</h3>
+                    <p>Your information may be transferred to and processed in countries other than your country of residence. We ensure appropriate safeguards are in place to protect your data during such transfers.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>10. Changes to This Policy</h3>
+                    <p>We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on our platform and updating the "last updated" date.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h3>11. Contact Us</h3>
+                    <p>If you have any questions about this Privacy Policy or our data practices, please contact us at:</p>
+                    <ul>
+                        <li>Email: privacy@district.com</li>
+                        <li>Phone: 1800-123-4567</li>
+                        <li>Address: District Tower, Tech City, Bangalore, KA 560001</li>
+                    </ul>
+                </div>
+
+                <div class="last-updated">
+                    Last updated: August 27, 2024
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function toggleFAQ(button) {
+            const faqItem = button.parentElement;
+            const answer = faqItem.querySelector('.faq-answer');
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+                item.querySelector('.faq-answer').classList.remove('active');
+            });
+            
+            // If this item wasn't active, open it
+            if (!isActive) {
+                faqItem.classList.add('active');
+                answer.classList.add('active');
+            }
+        }
+
+        function searchFAQ(searchTerm) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const categories = document.querySelectorAll('.faq-category');
+            
+            if (searchTerm.length === 0) {
+                // Show all items and categories
+                faqItems.forEach(item => item.style.display = 'block');
+                categories.forEach(category => category.style.display = 'block');
+                return;
+            }
+            
+            searchTerm = searchTerm.toLowerCase();
+            
+            categories.forEach(category => {
+                let hasVisibleItems = false;
+                const items = category.querySelectorAll('.faq-item');
+                
+                items.forEach(item => {
+                    const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                    const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                    
+                    if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        hasVisibleItems = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                category.style.display = hasVisibleItems ? 'block' : 'none';
+            });
+        }
+
+        // Form submission handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const button = this.querySelector('button[type="submit"]');
+                    const originalText = button.textContent;
+                    
+                    button.textContent = 'Sending...';
+                    button.disabled = true;
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.disabled = false;
+                        
+                        // Show success message
+                        const successDiv = document.createElement('div');
+                        successDiv.innerHTML = '✅ Message sent successfully! We\'ll get back to you soon.';
+                        successDiv.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            background: #d4edda;
+                            color: #155724;
+                            padding: 15px 20px;
+                            border-radius: 10px;
+                            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                            z-index: 1000;
+                            max-width: 300px;
+                        `;
+                        document.body.appendChild(successDiv);
+                        
+                        // Reset form
+                        this.reset();
+                        
+                        setTimeout(() => {
+                            successDiv.remove();
+                        }, 5000);
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

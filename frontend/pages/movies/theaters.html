@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Theaters - CineMax</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 100px;
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4ecdc4;
+        }
+
+        .form-input {
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-input::placeholder {
+            color: #ccc;
+        }
+
+        .search-btn {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-color: transparent;
+        }
+
+        /* Theaters Grid */
+        .theaters-grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .theater-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .theater-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .theater-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .theater-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #4ecdc4;
+        }
+
+        .theater-address {
+            color: #ccc;
+            margin-bottom: 0.5rem;
+        }
+
+        .theater-distance {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .theater-amenities {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .amenity {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .theater-showtimes {
+            margin-top: 1.5rem;
+        }
+
+        .showtime-header {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #ff6b6b;
+        }
+
+        .movies-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .movie-showtimes {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .movie-name {
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+
+        .times-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .time-slot {
+            padding: 0.5rem 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .time-slot:hover {
+            background: rgba(255, 107, 107, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .theater-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .primary-action {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+        }
+
+        .secondary-action {
+            background: transparent;
+            color: #4ecdc4;
+            border: 2px solid #4ecdc4;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .primary-action:hover {
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .secondary-action:hover {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        /* Map Section */
+        .map-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .map-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-info {
+            color: #ccc;
+        }
+
+        .map-toggle {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .map-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Load More */
+        .load-more {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .load-more-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .theater-header {
+                flex-direction: column;
+                align-items: start;
+                gap: 1rem;
+            }
+
+            .theater-actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .nav-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .times-grid {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filters {
+                justify-content: center;
+            }
+
+            .filter-btn {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🎬 CineMax</div>
+                <nav class="nav-buttons">
+                    <a href="index.html" class="nav-btn" onclick="loadPage('index.html')">🏠 Home</a>
+                    <a href="movie-detail.html" class="nav-btn" onclick="loadPage('movie-detail.html')">🎭 Movie Details</a>
+                    <a href="theaters.html" class="nav-btn" onclick="loadPage('theaters.html')">🏛️ Theaters</a>
+                    <a href="bookings.html" class="nav-btn" onclick="loadPage('bookings.html')">🎫 Book Tickets</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title">Find Theaters Near You</h1>
+
+            <section class="search-section">
+                <form class="search-form">
+                    <div class="form-group">
+                        <label class="form-label">📍 Location</label>
+                        <input type="text" class="form-input" placeholder="Enter your city or ZIP code" value="Rajpura, Punjab">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">📅 Date</label>
+                        <input type="date" class="form-input" value="2025-08-27">
+                    </div>
+                    <button type="button" class="search-btn" onclick="searchTheaters()">🔍 Search</button>
+                </form>
+            </section>
+
+            <div class="filters">
+                <button class="filter-btn active" onclick="toggleFilter(this, 'all')">All Theaters</button>
+                <button class="filter-btn" onclick="toggleFilter(this, 'imax')">IMAX</button>
+                <button class="filter-btn" onclick="toggleFilter(this, '4dx')">4DX</button>
+                <button class="filter-btn" onclick="toggleFilter(this, 'dolby')">Dolby Atmos</button>
+                <button class="filter-btn" onclick="toggleFilter(this, 'luxury')">Luxury</button>
+                <button class="filter-btn" onclick="toggleFilter(this, 'nearby')">< 5 km</button>
+            </div>
+
+            <section class="map-section">
+                <div class="map-placeholder">
+                    🗺️ Interactive Map
+                </div>
+                <div class="map-controls">
+                    <div class="map-info">Showing 8 theaters within 15 km</div>
+                    <button class="map-toggle" onclick="toggleMapView()">📱 Switch to List View</button>
+                </div>
+            </section>
+
+            <section class="theaters-grid">
+                <div class="theater-card">
+                    <div class="theater-header">
+                        <div class="theater-info">
+                            <h3>CineMax IMAX Rajpura</h3>
+                            <div class="theater-address">Mall Road, Rajpura, Punjab 147001</div>
+                            <div class="theater-amenities">
+                                <span class="amenity">🎬 IMAX</span>
+                                <span class="amenity">🔊 Dolby Atmos</span>
+                                <span class="amenity">🍿 Food Court</span>
+                                <span class="amenity">🅿️ Parking</span>
+                            </div>
+                        </div>
+                        <div class="theater-distance">1.2 km</div>
+                    </div>
+                    
+                    <div class="theater-showtimes">
+                        <div class="showtime-header">Today's Shows</div>
+                        <div class="movies-list">
+                            <div class="movie-showtimes">
+                                <div class="movie-name">Spider-Man: Across the Spider-Verse</div>
+                                <div class="times-grid">
+                                    <div class="time-slot" onclick="selectShowtime('10:00', 'CineMax IMAX Rajpura')">10:00</div>
+                                    <div class="time-slot" onclick="selectShowtime('13:30', 'CineMax IMAX Rajpura')">13:30</div>
+                                    <div class="time-slot" onclick="selectShowtime('16:45', 'CineMax IMAX Rajpura')">16:45</div>
+                                    <div class="time-slot" onclick="selectShowtime('20:00', 'CineMax IMAX Rajpura')">20:00</div>
+                                </div>
+                            </div>
+                            <div class="movie-showtimes">
+                                <div class="movie-name">Avatar: The Way of Water</div>
+                                <div class="times-grid">
+                                    <div class="time-slot" onclick="selectShowtime('11:00', 'CineMax IMAX Rajpura')">11:00</div>
+                                    <div class="time-slot" onclick="selectShowtime('15:15', 'CineMax IMAX Rajpura')">15:15</div>
+                                    <div class="time-slot" onclick="selectShowtime('19:30', 'CineMax IMAX Rajpura')">19:30</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theater-actions">
+                        <a href="#" class="action-btn secondary-action" onclick="getDirections('CineMax IMAX Rajpura')">🧭 Directions</a>
+                        <a href="#" class="action-btn primary-action" onclick="loadPage('bookings.html')">🎫 Book Now</a>
+                    </div>
+                </div>
+
+                <div class="theater-card">
+                    <div class="theater-header">
+                        <div class="theater-info">
+                            <h3>PVR Cinemas Patiala</h3>
+                            <div class="theater-address">Omaxe Mall, Patiala, Punjab 147001</div>
+                            <div class="theater-amenities">
+                                <span class="amenity">🎭 4DX</span>
+                                <span class="amenity">🔊 Dolby Atmos</span>
+                                <span class="amenity">🛋️ Recliner</span>
+                                <span class="amenity">🍿 Snacks</span>
+                            </div>
+                        </div>
+                        <div class="theater-distance">12.5 km</div>
+                    </div>
+                    
+                    <div class="theater-showtimes">
+                        <div class="showtime-header">Today's Shows</div>
+                        <div class="movies-list">
+                            <div class="movie-showtimes">
+                                <div class="movie-name">Dune: Part Two</div>
+                                <div class="times-grid">
+                                    <div class="time-slot" onclick="selectShowtime('09:45', 'PVR Cinemas Patiala')">09:45</div>
+                                    <div class="time-slot" onclick="selectShowtime('13:00', 'PVR Cinemas Patiala')">13:00</div>
+                                    <div class="time-slot" onclick="selectShowtime('17:15', 'PVR Cinemas Patiala')">17:15</div>
+                                    <div class="time-slot" onclick="selectShowtime('21:00', 'PVR Cinemas Patiala')">21:00</div>
+                                </div>
+                            </div>
+                            <div class="movie-showtimes">
+                                <div class="movie-name">The Batman</div>
+                                <div class="times-grid">
+                                    <div class="time-slot" onclick="selectShowtime('12:30', 'PVR Cinemas Patiala')">12:30</div>
+                                    <div class="time-slot" onclick="selectShowtime('16:00', 'PVR Cinemas Patiala')">16:00</div>
+                                    <div class="time-slot" onclick="selectShowtime('19:45', 'PVR Cinemas Patiala')">19:45</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theater-actions">
+                        <a href="#" class="action-btn secondary-action" onclick="getDirections('PVR Cinemas Patiala')">🧭 Directions</a>
+                        <a href="bookings.html" class="action-btn primary-action" onclick="loadPage('bookings.html')">🎫 Book Now</a>
+                    </div>
+                </div>
+
+                <div class="theater-card">
+                    <div class="theater-header">
+                        <div class="theater-info">
+                            <h3>Inox Chandigarh</h3>
+                            <div class="theater-address">Elante Mall, Chandigarh 160001</div>
+                            <div class="theater-amenities">
+                                <span class="amenity">💎 Luxury</span>
+                                <span class="amenity">🔊 Dolby Atmos</span>
+                                <span class="amenity">🍽️ Dine-in</span>
+                                <span class="amenity">🎮 Gaming Zone</span>
+                            </div>
+                        </div>
+                        <div class="theater-distance">35.2 km</div>
+                    </div>
+                    
+                    <div class="theater-showtimes">
+                        <div class="showtime-header">Today's Shows</div>
+                        <div class="movies-list">
+                            <div class="movie-showtimes">
+                                <div class="movie-name">Oppenheimer</div>
+                                <div class="times-grid">
+                                    <div class="time-slot" onclick="selectShowtime('10:30', 'Inox Chandigarh')">10:30</div>
+                                    <div class="time-slot" onclick="selectShowtime('14:15', 'Inox Chandigarh')">14:15</div>
+                                    <div class="time-slot" onclick="selectShowtime('18:00', 'Inox Chandigarh')">18:00</div>
+                                    <div class="time-slot" onclick="selectShowtime('21:45', 'Inox Chandigarh')">21:45</div>
+                                </div>
+                            </div>
+                            <div class="movie-showtimes">
+                                <div class="movie-name">Barbie</div>
+                                <div class="times-grid">
+                                    <div class="time-slot" onclick="selectShowtime('11:15', 'Inox Chandigarh')">11:15</div>
+                                    <div class="time-slot" onclick="selectShowtime('14:45', 'Inox Chandigarh')">14:45</div>
+                                    <div class="time-slot" onclick="selectShowtime('17:30', 'Inox Chandigarh')">17:30</div>
+                                    <div class="time-slot" onclick="selectShowtime('20:15', 'Inox Chandigarh')">20:15</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theater-actions">
+                        <a href="#" class="action-btn secondary-action" onclick="getDirections('Inox Chandigarh')">🧭 Directions</a>
+                        <a href="bookings.html" class="action-btn primary-action" onclick="loadPage('bookings.html')">🎫 Book Now</a>
+                    </div>
+                </div>
+            </section>
+
+            <div class="load-more">
+                <button class="load-more-btn" onclick="loadMoreTheaters()">Load More Theaters</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function loadPage(pageName) {
+            alert(`Navigating to ${pageName}...`);
+        }
+
+        function searchTheaters() {
+            alert("Searching for theaters...");
+            // In a real app, this would filter theaters based on location and date
+        }
+
+        function toggleFilter(button, filter) {
+            // Remove active class from all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            alert(`Filtering theaters by: ${filter}`);
+            // In a real app, this would filter the theater results
+        }
+
+        function toggleMapView() {
+            alert("Switching between map and list view...");
+            // In a real app, this would toggle between map and list display
+        }
+
+        function selectShowtime(time, theater) {
+            alert(`Selected ${time} at ${theater}. Redirecting to booking...`);
+            loadPage('bookings.html');
+        }
+
+        function getDirections(theater) {
+            alert(`Opening directions to ${theater}...`);
+            // In a real app, this would open Google Maps or similar
+        }
+
+        function loadMoreTheaters() {
+            alert("Loading more theaters...");
+            // In a real app, this would load additional theater results
+        }
+
+        // Animation on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.theater-card, .search-section, .map-section');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
