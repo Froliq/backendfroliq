@@ -1,26 +1,29 @@
 version: "3.9"
 services:
-  app:
+  web:
     build: .
     ports:
-      - "8000:80"
-    volumes:
-      - ./backend:/var/www/html
+      - "8080:80"
+    environment:
+      # The backend reads these via $_ENV in PHP (see backend/config/*.php)
+      DB_HOST: db
+      DB_NAME: entertainment_platform
+      DB_USER: p3user
+      DB_PASS: p3pass
+      ENVIRONMENT: development
     depends_on:
       - db
-
   db:
     image: mysql:8.0
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: p3
+      MYSQL_DATABASE: entertainment_platform
       MYSQL_USER: p3user
       MYSQL_PASSWORD: p3pass
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-
 volumes:
   db_data:
